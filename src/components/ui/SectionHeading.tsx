@@ -21,71 +21,63 @@ export default function SectionHeading({
 }: SectionHeadingProps) {
   const centered = align === 'center'
 
-  const item = {
-    hidden: { opacity: 0, y: 24 },
-    visible: { opacity: 1, y: 0 },
-  }
-
   return (
-    <motion.div
-      className={`${centered ? 'text-center' : 'text-left'} ${className}`}
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true, margin: '-80px' }}
-      transition={{ staggerChildren: 0.12 }}
-    >
-      {/* Label row */}
+    <div className={`${centered ? 'text-center' : 'text-left'} ${className}`}>
+      {/* Label pill */}
       <motion.div
-        variants={item}
-        transition={{ duration: 0.7, ease: 'easeOut' }}
-        className={`flex items-center gap-3 mb-4 ${centered ? 'justify-center' : ''}`}
+        className={centered ? 'flex justify-center' : ''}
+        initial={{ opacity: 0, y: 16 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: '-60px' }}
+        transition={{ duration: 0.55, ease: 'easeOut' }}
       >
-        {index && (
-          <span
-            className="font-[var(--font-mono)] text-xs text-[var(--color-accent)] tracking-[0.2em]"
-            aria-hidden="true"
-          >
-            {index}
-          </span>
-        )}
-        {index && (
-          <span
-            className="block w-8 h-px bg-[var(--color-accent)] opacity-60"
-            aria-hidden="true"
-          />
-        )}
-        <span className="font-[var(--font-sans)] text-xs uppercase tracking-[0.25em] text-[var(--color-foreground-muted)]">
+        <span className="section-label">
+          {index && (
+            <span style={{ color: 'rgba(56,189,248,0.55)', fontWeight: 500 }}>{index}</span>
+          )}
           {label}
         </span>
       </motion.div>
 
-      {/* Main title */}
+      {/* Title */}
       <motion.h2
-        variants={item}
-        transition={{ duration: 0.7, ease: 'easeOut' }}
-        className="font-[var(--font-display)] text-4xl md:text-5xl lg:text-6xl font-light text-[var(--color-foreground)] leading-[1.05] mb-0"
+        className="section-title"
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: '-60px' }}
+        transition={{ duration: 0.65, delay: 0.07, ease: 'easeOut' }}
       >
         {title}
       </motion.h2>
 
-      {/* Optional subtitle */}
+      {/* Subtitle */}
       {subtitle && (
         <motion.p
-          variants={item}
-          transition={{ duration: 0.7, ease: 'easeOut' }}
-          className={`mt-5 text-base text-[var(--color-foreground-muted)] leading-relaxed max-w-xl ${centered ? 'mx-auto' : ''}`}
+          className={`section-subtitle ${centered ? 'mx-auto' : ''}`}
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-60px' }}
+          transition={{ duration: 0.65, delay: 0.14, ease: 'easeOut' }}
         >
           {subtitle}
         </motion.p>
       )}
 
-      {/* Decorative rule */}
+      {/* Accent line */}
       <motion.div
-        variants={item}
-        transition={{ duration: 0.7, ease: 'easeOut' }}
-        className={`mt-8 h-px bg-[var(--color-border)] ${centered ? 'mx-auto max-w-xs' : 'max-w-xs'}`}
+        className={centered ? 'mx-auto mt-8' : 'mt-8'}
+        style={{
+          height: 2,
+          width: 56,
+          borderRadius: 2,
+          background: 'linear-gradient(to right, #38bdf8, #818cf8)',
+        }}
+        initial={{ scaleX: 0, originX: centered ? 0.5 : 0 }}
+        whileInView={{ scaleX: 1 }}
+        viewport={{ once: true, margin: '-60px' }}
+        transition={{ duration: 0.55, delay: 0.2, ease: 'easeOut' }}
         aria-hidden="true"
       />
-    </motion.div>
+    </div>
   )
 }

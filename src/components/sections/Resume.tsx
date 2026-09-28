@@ -1,59 +1,67 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { Download, FileText, ArrowUpRight } from 'lucide-react'
-import { profile } from '@/data/profile'
+import { Download, ArrowUpRight, FileText } from 'lucide-react'
 import SectionHeading from '@/components/ui/SectionHeading'
 import ScrollReveal from '@/components/ui/ScrollReveal'
-import Button from '@/components/ui/Button'
 
-// ─── Resume preview placeholder ───────────────────────────────────────────────
-function ResumePreview() {
+const META = [
+  { label: 'Format',   value: 'PDF, ATS-friendly' },
+  { label: 'Updated',  value: 'December 2024'     },
+  { label: 'Pages',    value: '1 page'            },
+  { label: 'Language', value: 'English'           },
+]
+
+function DocPreview() {
   return (
     <motion.div
-      className="relative border border-[var(--color-border)] bg-[var(--color-surface)] aspect-[3/4] overflow-hidden"
-      whileHover={{ scale: 1.01 }}
-      transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+      className="relative overflow-hidden card rounded-2xl"
+      style={{ aspectRatio: '3/4' }}
+      whileHover={{ scale: 1.02, transition: { duration: 0.35 } }}
       aria-hidden="true"
     >
-      {/* Simulated document lines */}
-      <div className="absolute inset-0 p-6 flex flex-col gap-4">
-        {/* Header block */}
-        <div className="flex flex-col gap-1.5 pb-4 border-b border-[var(--color-border)]">
-          <div className="h-5 w-1/2 bg-[var(--color-border)] rounded-none" />
-          <div className="h-3 w-1/3 bg-[var(--color-border-subtle)] rounded-none" />
+      <div className="absolute inset-0 p-6 flex flex-col gap-3" >
+        {/* Header lines */}
+        <div
+          className="flex flex-col gap-1.5 pb-4"
+          style={{ borderBottom: '1px solid rgba(56,189,248,0.1)' }}
+        >
+          <div className="h-4 w-2/5 rounded-full" style={{ background: 'rgba(56,189,248,0.22)' }} />
+          <div className="h-3 w-1/3 rounded-full" style={{ background: 'rgba(56,189,248,0.1)' }} />
         </div>
-        {/* Section blocks */}
-        {[70, 55, 80, 60, 75, 50, 65, 45, 70, 55].map((w, i) => (
+        {/* Body lines */}
+        {[82, 62, 78, 52, 88, 58, 72, 48, 68, 52, 76].map((w, i) => (
           <div
             key={i}
-            className={`h-2 bg-[var(--color-border-subtle)] rounded-none ${i === 0 || i === 3 || i === 7 ? 'mt-2' : ''}`}
-            style={{ width: `${w}%`, opacity: i % 3 === 0 ? 0.8 : 0.4 }}
+            className="h-2 rounded-full"
+            style={{
+              width: `${w}%`,
+              background:
+                i % 4 === 0
+                  ? 'rgba(56,189,248,0.28)'
+                  : 'rgba(56,189,248,0.07)',
+              marginTop: [0, 4, 8].includes(i) ? '0.4rem' : 0,
+            }}
           />
         ))}
-        {/* Accent block */}
-        <div className="h-2 w-1/4 bg-[var(--color-accent-dim)] rounded-none opacity-60" />
-        {[60, 45, 70].map((w, i) => (
-          <div
-            key={`b-${i}`}
-            className="h-2 bg-[var(--color-border-subtle)] rounded-none"
-            style={{ width: `${w}%`, opacity: 0.35 }}
-          />
-        ))}
+        <div
+          className="h-2 w-1/3 rounded-full mt-2"
+          style={{ background: 'rgba(129,140,248,0.3)' }}
+        />
       </div>
-
-      {/* Overlay gradient */}
+      {/* Bottom fade */}
       <div
-        className="absolute inset-0"
+        className="absolute inset-0 pointer-events-none"
         style={{
           background:
-            'linear-gradient(to bottom, transparent 60%, var(--color-surface) 100%)',
+            'linear-gradient(to bottom, transparent 55%, var(--color-surface) 100%)',
         }}
       />
-
-      {/* View label */}
-      <div className="absolute bottom-4 left-0 right-0 flex justify-center">
-        <span className="font-[var(--font-mono)] text-[9px] uppercase tracking-[0.2em] text-[var(--color-foreground-subtle)]">
+      <div className="absolute bottom-4 inset-x-0 flex justify-center">
+        <span
+          className="font-mono text-[9px] uppercase tracking-widest"
+          style={{ color: 'var(--color-foreground-subtle)' }}
+        >
           Resume preview
         </span>
       </div>
@@ -61,106 +69,133 @@ function ResumePreview() {
   )
 }
 
-// ─── Resume highlights ────────────────────────────────────────────────────────
-const highlights = [
-  { label: 'Format',      value: 'PDF, ATS-friendly' },
-  { label: 'Updated',     value: 'December 2024'     },
-  { label: 'Pages',       value: '1 page'            },
-  { label: 'Languages',   value: 'English'           },
-]
-
-// ─── Resume ───────────────────────────────────────────────────────────────────
 export default function Resume() {
   return (
     <section
       id="resume"
-      className="section-padding bg-[var(--color-background)] border-t border-[var(--color-border)]"
+      className="section-padding relative overflow-hidden"
+      style={{ background: "var(--color-background)" }}
       aria-label="Resume"
     >
-      <div className="container-main">
-        <SectionHeading
-          index="07"
-          label="Resume"
-          title="The full picture."
-          className="mb-16"
-        />
+      <div
+        className="orb absolute pointer-events-none"
+        style={{
+          top: '5%', right: '25%',
+          width: 380, height: 380,
+          background: 'radial-gradient(circle, rgba(56,189,248,0.07) 0%, transparent 70%)',
+        }}
+        aria-hidden="true"
+      />
 
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-12 xl:gap-20 items-start">
+      <div className="container-main relative z-10">
+        <SectionHeading index="07" label="Resume" title="The full picture." className="mb-16" />
 
-          {/* Left: info */}
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-12 xl:gap-20 items-start">
+          {/* Left */}
           <div className="flex flex-col gap-8">
             <ScrollReveal>
-              <p className="font-[var(--font-display)] text-2xl md:text-3xl font-light text-[var(--color-foreground)] leading-[1.4]">
+              <p
+                className="text-2xl md:text-3xl font-bold leading-[1.3]"
+                style={{ color: 'var(--color-foreground)' }}
+              >
                 Five years of building — distilled into one page.
               </p>
             </ScrollReveal>
 
-            <ScrollReveal delay={0.1}>
-              <p className="text-sm text-[var(--color-foreground-muted)] leading-relaxed max-w-lg">
+            <ScrollReveal delay={0.08}>
+              <p
+                className="text-sm leading-relaxed max-w-lg"
+                style={{ color: 'var(--color-foreground-muted)' }}
+              >
                 My resume covers professional experience, technical skills, and selected
-                projects. It&apos;s designed to give hiring managers and founders the
-                signal they need quickly.
+                projects. Designed to give hiring managers and founders the signal they
+                need, fast.
               </p>
             </ScrollReveal>
 
             {/* Meta grid */}
-            <ScrollReveal delay={0.15}>
-              <div className="grid grid-cols-2 gap-0 border border-[var(--color-border)]">
-                {highlights.map(({ label, value }, i) => (
+            <ScrollReveal delay={0.14}>
+              <div
+                className="grid grid-cols-2 overflow-hidden card rounded-2xl"
+                
+              >
+                {META.map(({ label, value }, i) => (
                   <div
                     key={label}
-                    className={`p-4 ${i % 2 === 0 ? 'border-r' : ''} ${i < 2 ? 'border-b' : ''} border-[var(--color-border)]`}
+                    className="p-4"
+                    style={{
+                      borderRight:  i % 2 === 0 ? '1px solid rgba(56,189,248,0.1)' : 'none',
+                      borderBottom: i < 2       ? '1px solid rgba(56,189,248,0.1)' : 'none',
+                    }}
                   >
-                    <p className="font-[var(--font-mono)] text-[9px] uppercase tracking-[0.2em] text-[var(--color-foreground-subtle)] mb-1">
+                    <p
+                      className="font-mono text-[9px] uppercase tracking-[0.2em] mb-1"
+                      style={{ color: 'var(--color-foreground-subtle)' }}
+                    >
                       {label}
                     </p>
-                    <p className="text-xs text-[var(--color-foreground-muted)]">{value}</p>
+                    <p className="text-xs" style={{ color: 'var(--color-foreground-muted)' }}>
+                      {value}
+                    </p>
                   </div>
                 ))}
               </div>
             </ScrollReveal>
 
-            {/* Actions */}
+            {/* CTA buttons */}
             <ScrollReveal delay={0.2}>
               <div className="flex flex-wrap gap-3">
-                <Button
-                  variant="primary"
-                  size="lg"
+                <motion.a
                   href="/resume.pdf"
-                  external
-                  icon={<Download size={14} strokeWidth={1.5} />}
-                  ariaLabel="Download resume PDF"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Download resume PDF"
+                  className="inline-flex items-center gap-2 px-8 py-4 rounded-full font-bold text-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--color-accent)]"
+                  style={{
+                    background: 'linear-gradient(135deg,#38bdf8,#818cf8)',
+                    color: '#020408',
+                  }}
+                  whileHover={{ scale: 1.03, boxShadow: '0 0 28px rgba(56,189,248,0.28)' }}
+                  whileTap={{ scale: 0.97 }}
+                  transition={{ duration: 0.2 }}
                 >
-                  Download PDF
-                </Button>
-                <Button
-                  variant="secondary"
-                  size="lg"
+                  <Download size={15} strokeWidth={2.5} /> Download PDF
+                </motion.a>
+                <motion.a
                   href="/resume.pdf"
-                  external
-                  icon={<ArrowUpRight size={14} strokeWidth={1.5} />}
-                  ariaLabel="View resume in browser"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="View resume online"
+                  className="inline-flex items-center gap-2 px-8 py-4 rounded-full font-semibold text-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--color-accent)]"
+                  style={{
+                    background: 'rgba(56,189,248,0.08)',
+                    border: '1px solid rgba(56,189,248,0.22)',
+                    color: 'var(--color-accent)',
+                  }}
+                  whileHover={{ scale: 1.03 }}
+                  whileTap={{ scale: 0.97 }}
+                  transition={{ duration: 0.2 }}
                 >
-                  View online
-                </Button>
+                  <ArrowUpRight size={15} strokeWidth={2} /> View online
+                </motion.a>
               </div>
             </ScrollReveal>
 
-            {/* Contact nudge */}
             <ScrollReveal delay={0.25}>
-              <div className="flex items-center gap-3 pt-2">
+              <div className="flex items-center gap-3">
                 <FileText
                   size={14}
                   strokeWidth={1.5}
-                  className="text-[var(--color-foreground-subtle)] flex-shrink-0"
+                  style={{ color: 'var(--color-foreground-subtle)', flexShrink: 0 }}
                 />
-                <p className="text-xs text-[var(--color-foreground-subtle)]">
+                <p className="text-xs" style={{ color: 'var(--color-foreground-subtle)' }}>
                   Prefer a conversation first?{' '}
                   <button
                     onClick={() =>
                       document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })
                     }
-                    className="text-[var(--color-accent)] hover:underline underline-offset-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--color-accent)]"
+                    className="hover:underline underline-offset-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--color-accent)]"
+                    style={{ color: 'var(--color-accent)' }}
                   >
                     Get in touch
                   </button>{' '}
@@ -170,9 +205,9 @@ export default function Resume() {
             </ScrollReveal>
           </div>
 
-          {/* Right: preview */}
+          {/* Right — preview */}
           <ScrollReveal delay={0.1}>
-            <ResumePreview />
+            <DocPreview />
           </ScrollReveal>
         </div>
       </div>

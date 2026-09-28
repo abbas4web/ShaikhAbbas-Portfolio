@@ -10,25 +10,21 @@ import Services from '@/components/sections/Services'
 import Resume from '@/components/sections/Resume'
 import Contact from '@/components/sections/Contact'
 
-/**
- * Root page — Server Component.
- * All animation and interactivity lives inside the individual
- * 'use client' section components. This file stays lean.
- */
 export default function Home() {
   return (
-    <>
+    <div className="relative z-10">
+      {/* Skip link */}
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:rounded-full focus:text-xs focus:font-bold focus:uppercase focus:tracking-widest focus:text-[#020408]"
+        style={{ background: 'linear-gradient(135deg, #38bdf8, #818cf8)' }}
+      >
+        Skip to content
+      </a>
+
       <Navbar />
 
       <main id="main-content" tabIndex={-1}>
-        {/* Skip-to-content target for keyboard users */}
-        <a
-          href="#main-content"
-          className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-[var(--color-accent)] focus:text-[var(--color-background)] focus:text-xs focus:uppercase focus:tracking-widest"
-        >
-          Skip to content
-        </a>
-
         <Hero />
         <About />
         <Skills />
@@ -41,6 +37,6 @@ export default function Home() {
       </main>
 
       <Footer />
-    </>
+    </div>
   )
 }

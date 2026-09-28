@@ -5,155 +5,95 @@ import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
 import { navItems, ctaNav } from '@/data/navigation'
 
-// ─── Hook: active section via IntersectionObserver ────────────────────────────
-function useActiveSection(): string {
+function useActiveSection() {
   const [active, setActive] = useState('')
-
   useEffect(() => {
     const ids = navItems.map((n) => n.sectionId)
     const observers: IntersectionObserver[] = []
-
-    const handleIntersect = (entries: IntersectionObserverEntry[]) => {
-      for (const entry of entries) {
-        if (entry.isIntersecting) {
-          setActive(entry.target.id)
-        }
-      }
+    const cb = (entries: IntersectionObserverEntry[]) => {
+      for (const e of entries) if (e.isIntersecting) setActive(e.target.id)
     }
-
     ids.forEach((id) => {
       const el = document.getElementById(id)
       if (!el) return
-      const obs = new IntersectionObserver(handleIntersect, {
-        rootMargin: '-40% 0px -55% 0px',
-        threshold: 0,
-      })
+      const obs = new IntersectionObserver(cb, { rootMargin: '-40% 0px -55% 0px', threshold: 0 })
       obs.observe(el)
       observers.push(obs)
     })
-
     return () => observers.forEach((o) => o.disconnect())
   }, [])
-
   return active
 }
 
-// ─── Hook: scroll position ────────────────────────────────────────────────────
-function useScrolled(threshold = 40): boolean {
+function useScrolled(threshold = 50) {
   const [scrolled, setScrolled] = useState(false)
-
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > threshold)
-    onScroll()
-    window.addEventListener('scroll', onScroll, { passive: true })
-    return () => window.removeEventListener('scroll', onScroll)
+    const fn = () => setScrolled(window.scrollY > threshold)
+    fn()
+    window.addEventListener('scroll', fn, { passive: true })
+    return () => window.removeEventListener('scroll', fn)
   }, [threshold])
-
   return scrolled
 }
 
-// ─── Mobile Menu ──────────────────────────────────────────────────────────────
-interface MobileMenuProps {
-  open: boolean
-  active: string
-  onClose: () => void
-}
+// ─── Mobile panel ─────────────────────────────────────────────────────────────
+function MobileMenu({ open, active, onClose }: { open: boolean; active: string; onClose: () => void }) {
+  useEffect(() => { document.body.style.overflow = open ? 'hidden' : '' }, [open])
 
-function MobileMenu({ open, active, onClose }: MobileMenuProps) {
-  // Lock body scroll when open
-  useEffect(() => {
-    document.body.style.overflow = open ? 'hidden' : ''
-    return () => { document.body.style.overflow = '' }
-  }, [open])
-
-  const handleNavClick = useCallback(
-    (href: string) => {
-      onClose()
-      // Small delay lets the menu close before scroll
-      setTimeout(() => {
-        const id = href.replace('#', '')
-        document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
-      }, 300)
-    },
-    [onClose],
-  )
+  const go = useCallback((href: string) => {
+    onClose()
+    setTimeout(() => document.getElementById(href.replace('#', ''))?.scrollIntoView({ behavior: 'smooth' }), 300)
+  }, [onClose])
 
   return (
     <AnimatePresence>
       {open && (
         <>
-          {/* Backdrop */}
           <motion.div
-            key="backdrop"
-            className="fixed inset-0 z-40 bg-[var(--color-background)]/80 backdrop-blur-sm"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
+            key="bd"
+            className="fixed inset-0 z-40"
+            style={{ background: 'rgba(3,6,15,0.85)', backdropFilter: 'blur(12px)' }}
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            transition={{ duration: 0.25 }}
             onClick={onClose}
             aria-hidden="true"
           />
-
-          {/* Panel */}
           <motion.nav
             key="panel"
-            role="dialog"
-            aria-modal="true"
-            aria-label="Mobile navigation"
-            className="fixed inset-y-0 right-0 z-50 w-full max-w-sm bg-[var(--color-surface)] border-l border-[var(--color-border)] flex flex-col"
-            initial={{ x: '100%' }}
-            animate={{ x: 0 }}
-            exit={{ x: '100%' }}
-            transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+            role="dialog" aria-modal="true" aria-label="Mobile navigation"
+            className="fixed inset-y-0 right-0 z-50 w-80 flex flex-col"
+            style={{ background: 'var(--color-surface)', borderLeft: '1px solid rgba(56,189,248,0.14)' }}
+            initial={{ x: '100%' }} animate={{ x: 0 }} exit={{ x: '100%' }}
+            transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
           >
             {/* Header */}
-            <div className="flex items-center justify-between px-8 py-6 border-b border-[var(--color-border)]">
-              <span className="font-[var(--font-mono)] text-xs text-[var(--color-foreground-muted)] tracking-widest uppercase">
-                Menu
-              </span>
-              <button
-                onClick={onClose}
-                aria-label="Close menu"
-                className="w-8 h-8 flex items-center justify-center text-[var(--color-foreground-muted)] hover:text-[var(--color-foreground)] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--color-accent)]"
-              >
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                  <path d="M1 1L15 15M15 1L1 15" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+            <div className="flex items-center justify-between px-8 py-6" style={{ borderBottom: '1px solid rgba(56,189,248,0.08)' }}>
+              <span className="font-mono text-xs uppercase tracking-widest" style={{ color: 'var(--color-foreground-subtle)' }}>Menu</span>
+              <button onClick={onClose} aria-label="Close menu"
+                className="w-9 h-9 flex items-center justify-center rounded-xl transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--color-accent)]"
+                style={{ background: 'rgba(56,189,248,0.06)', color: 'var(--color-foreground-muted)' }}>
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                  <path d="M1 1L13 13M13 1L1 13" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
                 </svg>
               </button>
             </div>
 
-            {/* Nav links */}
-            <ul className="flex flex-col flex-1 px-8 py-10 gap-1" role="list">
+            {/* Links */}
+            <ul className="flex flex-col flex-1 px-8 py-8 gap-1" role="list">
               {navItems.map((item, i) => {
                 const isActive = active === item.sectionId
                 return (
-                  <motion.li
-                    key={item.sectionId}
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.1 + i * 0.06, duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-                  >
-                    <button
-                      onClick={() => handleNavClick(item.href)}
-                      className={`
-                        group w-full flex items-center justify-between py-4
-                        border-b border-[var(--color-border-subtle)]
-                        text-left transition-colors duration-200
-                        focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--color-accent)]
-                        ${isActive
-                          ? 'text-[var(--color-accent)]'
-                          : 'text-[var(--color-foreground-muted)] hover:text-[var(--color-foreground)]'}
-                      `}
-                    >
-                      <span className="font-[var(--font-display)] text-2xl font-light">
-                        {item.label}
-                      </span>
-                      <span
-                        className={`w-1.5 h-1.5 rounded-full transition-colors duration-200 ${
-                          isActive ? 'bg-[var(--color-accent)]' : 'bg-transparent'
-                        }`}
-                        aria-hidden="true"
-                      />
+                  <motion.li key={item.sectionId}
+                    initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.06 + i * 0.05, duration: 0.35, ease: [0.16, 1, 0.3, 1] }}>
+                    <button onClick={() => go(item.href)}
+                      className="w-full flex items-center justify-between py-4 text-left transition-colors duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--color-accent)]"
+                      style={{
+                        borderBottom: '1px solid rgba(56,189,248,0.06)',
+                        color: isActive ? 'var(--color-accent)' : 'var(--color-foreground-muted)',
+                      }}>
+                      <span className="text-xl font-bold tracking-tight">{item.label}</span>
+                      {isActive && <span className="w-2 h-2 rounded-full" style={{ background: 'var(--color-accent)' }} aria-hidden="true" />}
                     </button>
                   </motion.li>
                 )
@@ -161,16 +101,11 @@ function MobileMenu({ open, active, onClose }: MobileMenuProps) {
             </ul>
 
             {/* CTA */}
-            <motion.div
-              className="px-8 py-8 border-t border-[var(--color-border)]"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.5, duration: 0.4 }}
-            >
-              <button
-                onClick={() => handleNavClick(ctaNav.href)}
-                className="w-full py-3 text-center text-xs uppercase tracking-widest font-medium bg-[var(--color-accent)] text-[var(--color-background)] transition-colors hover:bg-[var(--color-foreground)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--color-accent)]"
-              >
+            <motion.div className="px-8 py-8" style={{ borderTop: '1px solid rgba(56,189,248,0.08)' }}
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.45 }}>
+              <button onClick={() => go(ctaNav.href)}
+                className="w-full py-3.5 rounded-full font-bold text-sm btn-shine focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--color-accent)]"
+                style={{ color: '#020408' }}>
                 {ctaNav.label}
               </button>
             </motion.div>
@@ -181,121 +116,66 @@ function MobileMenu({ open, active, onClose }: MobileMenuProps) {
   )
 }
 
-// ─── Hamburger icon ───────────────────────────────────────────────────────────
-function Hamburger({ open }: { open: boolean }) {
-  return (
-    <svg
-      width="22"
-      height="14"
-      viewBox="0 0 22 14"
-      fill="none"
-      aria-hidden="true"
-      className="overflow-visible"
-    >
-      <motion.path
-        d="M0 1H22"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        animate={open ? { d: 'M2 12L20 2', opacity: 0 } : { d: 'M0 1H22', opacity: 1 }}
-        transition={{ duration: 0.3 }}
-      />
-      <motion.path
-        d="M0 7H22"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        animate={open ? { opacity: 0, scaleX: 0 } : { opacity: 1, scaleX: 1 }}
-        transition={{ duration: 0.2 }}
-        style={{ originX: '50%' }}
-      />
-      <motion.path
-        d="M0 13H22"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        animate={open ? { d: 'M2 2L20 12', opacity: 0 } : { d: 'M0 13H22', opacity: 1 }}
-        transition={{ duration: 0.3 }}
-      />
-    </svg>
-  )
-}
-
 // ─── Navbar ───────────────────────────────────────────────────────────────────
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false)
   const active = useActiveSection()
   const scrolled = useScrolled()
-
-  const handleNavClick = useCallback((href: string) => {
-    const id = href.replace('#', '')
-    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
-  }, [])
+  const go = useCallback((href: string) =>
+    document.getElementById(href.replace('#', ''))?.scrollIntoView({ behavior: 'smooth' }), [])
 
   return (
     <>
       <motion.header
         role="banner"
-        className={`
-          fixed top-0 left-0 right-0 z-30
-          transition-all duration-500 ease-[var(--ease-cinematic)]
-          ${scrolled
-            ? 'border-b border-[var(--color-border)] bg-[var(--color-background)]/90 backdrop-blur-md py-4'
-            : 'bg-transparent py-6'}
-        `}
-        initial={{ y: -80, opacity: 0 }}
+        className="fixed top-0 left-0 right-0 z-30 transition-all duration-500"
+        style={scrolled
+          ? { padding: '0.75rem 0', background: 'rgba(3,6,15,0.88)', backdropFilter: 'blur(22px)', borderBottom: '1px solid rgba(56,189,248,0.1)' }
+          : { padding: '1.25rem 0' }}
+        initial={{ y: -70, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
+        transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
       >
         <div className="container-main flex items-center justify-between">
 
-          {/* Logo / wordmark */}
-          <Link
-            href="/"
-            aria-label="Shaikh Abbas — home"
-            className="group flex items-center gap-3 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--color-accent)]"
-          >
-            <span
-              className="w-7 h-7 border border-[var(--color-accent)] flex items-center justify-center transition-colors duration-300 group-hover:bg-[var(--color-accent)]"
-              aria-hidden="true"
+          {/* Logo */}
+          <Link href="/" aria-label="Shaikh Abbas — home"
+            className="flex items-center gap-3 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--color-accent)]">
+            <motion.div
+              className="w-9 h-9 rounded-full flex items-center justify-center text-[11px] font-bold font-mono"
+              style={{ background: 'linear-gradient(135deg, #38bdf8, #818cf8)', color: '#020408' }}
+              whileHover={{ scale: 1.08, rotate: 5 }} transition={{ duration: 0.2 }}
             >
-              <span className="font-[var(--font-mono)] text-[10px] text-[var(--color-accent)] group-hover:text-[var(--color-background)] transition-colors duration-300 leading-none">
-                SA
-              </span>
-            </span>
-            <span className="font-[var(--font-display)] text-sm tracking-wide text-[var(--color-foreground)] hidden sm:block">
+              SA
+            </motion.div>
+            <span className="font-bold text-base hidden sm:block" style={{ color: 'var(--color-foreground)', letterSpacing: '-0.02em' }}>
               Shaikh Abbas
             </span>
           </Link>
 
-          {/* Desktop navigation */}
-          <nav aria-label="Primary navigation" className="hidden lg:flex items-center gap-8">
-            <ul className="flex items-center gap-8" role="list">
+          {/* Desktop nav */}
+          <nav aria-label="Primary navigation" className="hidden lg:flex items-center gap-1">
+            <ul className="flex items-center gap-1" role="list">
               {navItems.map((item) => {
                 const isActive = active === item.sectionId
                 return (
                   <li key={item.sectionId}>
                     <button
-                      onClick={() => handleNavClick(item.href)}
-                      className={`
-                        relative group text-[11px] uppercase tracking-[0.18em] font-medium
-                        transition-colors duration-200
-                        focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--color-accent)]
-                        ${isActive
-                          ? 'text-[var(--color-accent)]'
-                          : 'text-[var(--color-foreground-muted)] hover:text-[var(--color-foreground)]'}
-                      `}
+                      onClick={() => go(item.href)}
                       aria-current={isActive ? 'location' : undefined}
+                      className="relative px-4 py-2.5 text-xs font-semibold uppercase tracking-[0.12em] rounded-xl transition-colors duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--color-accent)]"
+                      style={{ color: isActive ? 'var(--color-accent)' : 'var(--color-foreground-muted)' }}
                     >
-                      {item.label}
-                      {/* Active underline */}
-                      <motion.span
-                        className="absolute -bottom-1 left-0 h-px bg-[var(--color-accent)]"
-                        initial={false}
-                        animate={{ width: isActive ? '100%' : '0%' }}
-                        transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-                        aria-hidden="true"
-                      />
+                      {isActive && (
+                        <motion.span
+                          layoutId="nav-pill"
+                          className="absolute inset-0 rounded-xl"
+                          style={{ background: 'rgba(56,189,248,0.1)', border: '1px solid rgba(56,189,248,0.2)' }}
+                          transition={{ type: 'spring', stiffness: 380, damping: 36 }}
+                          aria-hidden="true"
+                        />
+                      )}
+                      <span className="relative">{item.label}</span>
                     </button>
                   </li>
                 )
@@ -303,18 +183,16 @@ export default function Navbar() {
             </ul>
 
             {/* Resume CTA */}
-            <button
-              onClick={() => handleNavClick(ctaNav.href)}
-              className="
-                text-[11px] uppercase tracking-[0.18em] font-medium
-                px-5 py-2.5 border border-[var(--color-accent)]
-                text-[var(--color-accent)] hover:bg-[var(--color-accent)] hover:text-[var(--color-background)]
-                transition-all duration-300 ease-[var(--ease-cinematic)]
-                focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--color-accent)]
-              "
+            <motion.button
+              onClick={() => go(ctaNav.href)}
+              className="ml-3 px-5 py-2.5 rounded-full text-xs font-bold uppercase tracking-[0.12em] btn-shine focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--color-accent)]"
+              style={{ color: '#020408' }}
+              whileHover={{ scale: 1.04, boxShadow: '0 0 20px rgba(56,189,248,0.3)' }}
+              whileTap={{ scale: 0.97 }}
+              transition={{ duration: 0.18 }}
             >
               {ctaNav.label}
-            </button>
+            </motion.button>
           </nav>
 
           {/* Mobile hamburger */}
@@ -322,20 +200,23 @@ export default function Navbar() {
             onClick={() => setMenuOpen((v) => !v)}
             aria-label={menuOpen ? 'Close menu' : 'Open menu'}
             aria-expanded={menuOpen}
-            aria-controls="mobile-menu"
-            className="lg:hidden w-10 h-10 flex items-center justify-center text-[var(--color-foreground-muted)] hover:text-[var(--color-foreground)] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--color-accent)]"
+            className="lg:hidden w-10 h-10 flex flex-col items-center justify-center gap-1.5 rounded-xl transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--color-accent)]"
+            style={{ color: 'var(--color-foreground)' }}
           >
-            <Hamburger open={menuOpen} />
+            <motion.span className="block w-5 h-0.5 rounded-full bg-current"
+              animate={menuOpen ? { rotate: 45, y: 8 } : { rotate: 0, y: 0 }}
+              transition={{ duration: 0.28 }} />
+            <motion.span className="block w-5 h-0.5 rounded-full bg-current"
+              animate={menuOpen ? { opacity: 0, scaleX: 0 } : { opacity: 1, scaleX: 1 }}
+              transition={{ duration: 0.2 }} />
+            <motion.span className="block w-5 h-0.5 rounded-full bg-current"
+              animate={menuOpen ? { rotate: -45, y: -8 } : { rotate: 0, y: 0 }}
+              transition={{ duration: 0.28 }} />
           </button>
         </div>
       </motion.header>
 
-      {/* Mobile menu */}
-      <MobileMenu
-        open={menuOpen}
-        active={active}
-        onClose={() => setMenuOpen(false)}
-      />
+      <MobileMenu open={menuOpen} active={active} onClose={() => setMenuOpen(false)} />
     </>
   )
 }

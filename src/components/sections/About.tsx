@@ -6,161 +6,172 @@ import { profile } from '@/data/profile'
 import SectionHeading from '@/components/ui/SectionHeading'
 import ScrollReveal from '@/components/ui/ScrollReveal'
 
-// ─── Stat pill ────────────────────────────────────────────────────────────────
-function StatItem({
-  value,
-  label,
-  delay = 0,
-}: {
-  value: string
-  label: string
-  delay?: number
-}) {
-  return (
-    <ScrollReveal delay={delay}>
-      <div className="border border-[var(--color-border)] p-6 group hover:border-[var(--color-accent-dim)] transition-colors duration-500">
-        <p className="font-[var(--font-display)] text-4xl font-light text-[var(--color-foreground)] mb-1 group-hover:text-[var(--color-accent)] transition-colors duration-300">
-          {value}
-        </p>
-        <p className="font-[var(--font-mono)] text-[10px] uppercase tracking-[0.2em] text-[var(--color-foreground-subtle)]">
-          {label}
-        </p>
-      </div>
-    </ScrollReveal>
-  )
-}
+const STATS = [
+  { value: '5+',   label: 'Years experience' },
+  { value: '30+',  label: 'Projects shipped'  },
+  { value: '8+',   label: 'AI systems built'  },
+  { value: '100%', label: 'Remote ready'       },
+]
 
-// ─── Parallax image placeholder ───────────────────────────────────────────────
-function AboutVisual() {
-  const ref = useRef<HTMLDivElement>(null)
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ['start end', 'end start'],
-  })
-  const y = useTransform(scrollYProgress, [0, 1], ['-8%', '8%'])
+const PRINCIPLES = [
+  { title: 'Precision',  body: 'Details compound. I sweat the small stuff because it adds up to something remarkable.' },
+  { title: 'Velocity',   body: 'Speed of learning and execution — not cutting corners — is how I stay ahead.' },
+  { title: 'Clarity',    body: 'Complex systems demand clear thinking. Code that future-me will thank.' },
+]
 
-  return (
-    <div
-      ref={ref}
-      className="relative w-full aspect-[3/4] overflow-hidden border border-[var(--color-border)] bg-[var(--color-surface)]"
-      aria-hidden="true"
-    >
-      {/* Subtle parallax inner layer */}
-      <motion.div className="absolute inset-[-10%]" style={{ y }}>
-        {/* Grid pattern fill — replace with <Image> when real photo is available */}
-        <div
-          className="w-full h-full"
-          style={{
-            backgroundImage: `
-              linear-gradient(var(--color-border-subtle) 1px, transparent 1px),
-              linear-gradient(90deg, var(--color-border-subtle) 1px, transparent 1px)
-            `,
-            backgroundSize: '40px 40px',
-          }}
-        />
-        {/* Corner accent */}
-        <div className="absolute top-0 left-0 w-16 h-16 border-r border-b border-[var(--color-accent-dim)]" />
-        <div className="absolute bottom-0 right-0 w-16 h-16 border-l border-t border-[var(--color-accent-dim)]" />
-        {/* Initials */}
-        <div className="absolute inset-0 flex items-center justify-center">
-          <span className="font-[var(--font-display)] text-[8rem] font-light text-[var(--color-border)] select-none">
-            SA
-          </span>
-        </div>
-      </motion.div>
-
-      {/* Gradient overlay */}
-      <div
-        className="absolute inset-0"
-        style={{
-          background:
-            'linear-gradient(to top, var(--color-surface) 0%, transparent 40%)',
-        }}
-      />
-    </div>
-  )
-}
-
-// ─── About ────────────────────────────────────────────────────────────────────
 export default function About() {
+  const imgRef = useRef<HTMLDivElement>(null)
+  const { scrollYProgress } = useScroll({ target: imgRef, offset: ['start end', 'end start'] })
+  const y = useTransform(scrollYProgress, [0, 1], ['-6%', '6%'])
+
   return (
     <section
       id="about"
-      className="section-padding bg-[var(--color-background)] border-t border-[var(--color-border)]"
+      className="section-padding relative overflow-hidden"
+      style={{ background: "var(--color-background)" }}
       aria-label="About me"
     >
-      <div className="container-main">
+      {/* Ambient glow */}
+      <div
+        className="orb absolute pointer-events-none"
+        style={{
+          top: '-10%', right: '-5%',
+          width: 500, height: 500,
+          background: 'radial-gradient(circle, rgba(129,140,248,0.12) 0%, transparent 70%)',
+        }}
+        aria-hidden="true"
+      />
 
-        {/* Heading */}
+      <div className="container-main relative z-10">
         <SectionHeading
           index="01"
           label="About"
           title="Craft meets intelligence."
-          className="mb-16 md:mb-20"
+          className="mb-16"
         />
 
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_400px] gap-16 xl:gap-24 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 xl:gap-20 items-start">
 
-          {/* Text column */}
+          {/* ── Left column ── */}
           <div className="flex flex-col gap-8">
             <ScrollReveal>
-              <p className="font-[var(--font-display)] text-2xl md:text-3xl font-light text-[var(--color-foreground)] leading-[1.4]">
+              <p
+                className="text-2xl md:text-3xl font-bold leading-[1.3]"
+                style={{ color: 'var(--color-foreground)' }}
+              >
                 {profile.bio}
               </p>
             </ScrollReveal>
 
             <ScrollReveal delay={0.1}>
-              <p className="text-base text-[var(--color-foreground-muted)] leading-[1.8]">
+              <p className="text-base leading-relaxed" style={{ color: 'var(--color-foreground-muted)' }}>
                 {profile.bioExtended}
               </p>
             </ScrollReveal>
 
-            {/* Values / approach */}
-            <ScrollReveal delay={0.2}>
-              <div className="border-l-2 border-[var(--color-accent)] pl-5 mt-2">
-                <p className="text-sm text-[var(--color-foreground-muted)] leading-relaxed italic font-[var(--font-display)]">
+            {/* Quote */}
+            <ScrollReveal delay={0.18}>
+              <div className="pl-5 relative">
+                <div
+                  className="absolute left-0 top-0 bottom-0 w-0.5 rounded-full"
+                  style={{ background: 'linear-gradient(to bottom, #38bdf8, #818cf8)' }}
+                  aria-hidden="true"
+                />
+                <p
+                  className="text-base italic leading-relaxed"
+                  style={{ color: 'var(--color-foreground-muted)' }}
+                >
                   "I believe the best software is invisible — it solves real problems so
                   smoothly that users never notice the engineering behind it."
                 </p>
               </div>
             </ScrollReveal>
 
-            {/* Principles */}
-            <ScrollReveal delay={0.25}>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-4">
-                {[
-                  { title: 'Precision', body: 'Details compound. I sweat the small stuff because it adds up to something remarkable.' },
-                  { title: 'Velocity', body: 'Speed of learning and execution — not cutting corners — is how I stay ahead.' },
-                  { title: 'Clarity', body: 'Complex systems demand clear thinking. I write code and documents that future-me will thank.' },
-                ].map(({ title, body }) => (
-                  <div
-                    key={title}
-                    className="p-4 border border-[var(--color-border)] hover:border-[var(--color-accent-dim)] transition-colors duration-300 group"
+            {/* Principles grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              {PRINCIPLES.map(({ title, body }, i) => (
+                <ScrollReveal key={title} delay={0.1 + i * 0.08}>
+                  <motion.div
+                    className="card rounded-2xl p-5 h-full"
+                    whileHover={{ y: -4, transition: { duration: 0.25 } }}
                   >
-                    <p className="font-[var(--font-mono)] text-[10px] uppercase tracking-[0.2em] text-[var(--color-accent)] mb-2">
+                    <p
+                      className="font-mono text-[10px] uppercase tracking-[0.22em] mb-2"
+                      style={{ color: 'var(--color-accent)' }}
+                    >
                       {title}
                     </p>
-                    <p className="text-xs text-[var(--color-foreground-muted)] leading-relaxed">
+                    <p className="text-xs leading-relaxed" style={{ color: 'var(--color-foreground-muted)' }}>
                       {body}
                     </p>
-                  </div>
-                ))}
-              </div>
-            </ScrollReveal>
+                  </motion.div>
+                </ScrollReveal>
+              ))}
+            </div>
           </div>
 
-          {/* Visual column */}
-          <div className="flex flex-col gap-8">
-            <ScrollReveal delay={0.15}>
-              <AboutVisual />
+          {/* ── Right column ── */}
+          <div className="flex flex-col gap-6">
+            {/* Portrait placeholder with parallax */}
+            <ScrollReveal delay={0.12}>
+              <div
+                ref={imgRef}
+                className="relative overflow-hidden card rounded-2xl"
+                style={{ aspectRatio: '3/4' }}
+              >
+                <motion.div
+                  className="absolute inset-[-10%] flex items-center justify-center"
+                  style={{
+                    y,
+                    background: 'linear-gradient(135deg, var(--color-surface) 0%, var(--color-surface-3) 100%)',
+                  }}
+                >
+                  {/* Animated rings */}
+                  <div className="relative w-44 h-44">
+                    {[0, 1, 2].map((i) => (
+                      <motion.div
+                        key={i}
+                        className="absolute inset-0 rounded-full"
+                        style={{
+                          border: `1px solid ${
+                            i === 0
+                              ? 'rgba(56,189,248,0.45)'
+                              : i === 1
+                              ? 'rgba(129,140,248,0.3)'
+                              : 'rgba(6,182,212,0.2)'
+                          }`,
+                          scale: 1 + i * 0.28,
+                        }}
+                        animate={{ rotate: i % 2 === 0 ? 360 : -360 }}
+                        transition={{ duration: 14 + i * 4, repeat: Infinity, ease: 'linear' }}
+                      />
+                    ))}
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <span className="text-5xl font-bold text-gradient select-none">SA</span>
+                    </div>
+                  </div>
+                </motion.div>
+              </div>
             </ScrollReveal>
 
-            {/* Stats */}
+            {/* Stat grid */}
             <div className="grid grid-cols-2 gap-3">
-              <StatItem value="5+" label="Years experience" delay={0.2} />
-              <StatItem value="30+" label="Projects shipped" delay={0.25} />
-              <StatItem value="8+" label="AI systems built" delay={0.3} />
-              <StatItem value="100%" label="Remote ready" delay={0.35} />
+              {STATS.map(({ value, label }, i) => (
+                <ScrollReveal key={label} delay={0.15 + i * 0.07}>
+                  <motion.div
+                    className="card rounded-2xl p-5 text-center"
+                    whileHover={{ y: -3, transition: { duration: 0.25 } }}
+                  >
+                    <p className="text-3xl font-bold text-gradient mb-1">{value}</p>
+                    <p
+                      className="font-mono text-[10px] uppercase tracking-[0.18em]"
+                      style={{ color: 'var(--color-foreground-subtle)' }}
+                    >
+                      {label}
+                    </p>
+                  </motion.div>
+                </ScrollReveal>
+              ))}
             </div>
           </div>
         </div>

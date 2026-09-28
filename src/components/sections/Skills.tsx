@@ -81,7 +81,7 @@ export default function Skills() {
       <div className="orb absolute pointer-events-none" style={{ bottom: '-10%', left: '-5%', width: 500, height: 500, background: 'radial-gradient(circle, rgba(56,189,248,0.09) 0%, transparent 70%)' }} aria-hidden="true" />
       <div className="container-main relative z-10">
         <SectionHeading index="02" label="Skills" title="Tools of the trade." subtitle="From model training to production deployment — my curated daily toolkit." className="mb-16" />
-        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5 mb-14">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 mb-14">
           {skillCategories.map((cat, i) => <CategoryCard key={cat.id} category={cat} delay={i * 0.07} />)}
         </div>
         <div className="section-divider mb-10" aria-hidden="true" />

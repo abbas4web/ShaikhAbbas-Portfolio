@@ -16,7 +16,7 @@ function ServiceCard({ service: s, index, isActive, onHover }: {
   return (
     <ScrollReveal delay={index * 0.08}>
       <motion.article
-        className="group relative flex flex-col h-full rounded-2xl p-7"
+        className="group relative flex flex-col h-full rounded-2xl p-6"
         style={{
           background: isActive ? 'var(--color-surface-2)' : 'var(--color-surface)',
           border: `1px solid ${isActive ? 'rgba(56,189,248,0.3)' : 'rgba(56,189,248,0.1)'}`,
@@ -78,7 +78,7 @@ export default function Services() {
             </motion.button>
           </ScrollReveal>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
           {services.sort((a, b) => a.displayOrder - b.displayOrder).map((s, i) => (
             <ServiceCard key={s.id} service={s} index={i} isActive={activeId === s.id} onHover={setActiveId} />
           ))}

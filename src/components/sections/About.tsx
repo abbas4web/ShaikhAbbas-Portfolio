@@ -50,7 +50,7 @@ export default function About() {
           className="mb-16"
         />
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 xl:gap-20 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-12 xl:gap-16 items-start">
 
           {/* ── Left column ── */}
           <div className="flex flex-col gap-8">
@@ -88,7 +88,7 @@ export default function About() {
             </ScrollReveal>
 
             {/* Principles grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
               {PRINCIPLES.map(({ title, body }, i) => (
                 <ScrollReveal key={title} delay={0.1 + i * 0.08}>
                   <motion.div
@@ -155,7 +155,7 @@ export default function About() {
             </ScrollReveal>
 
             {/* Stat grid */}
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-2 gap-3 sm:gap-4">
               {STATS.map(({ value, label }, i) => (
                 <ScrollReveal key={label} delay={0.15 + i * 0.07}>
                   <motion.div

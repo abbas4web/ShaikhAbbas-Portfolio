@@ -154,8 +154,8 @@ export default function Navbar() {
           </Link>
 
           {/* Desktop nav */}
-          <nav aria-label="Primary navigation" className="hidden lg:flex items-center gap-2">
-            <ul className="flex items-center gap-2" role="list">
+          <nav aria-label="Primary navigation" className="hidden lg:flex items-center gap-1">
+            <ul className="flex items-center gap-1" role="list">
               {navItems.map((item) => {
                 const isActive = active === item.sectionId
                 return (

@@ -4,167 +4,126 @@ import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { experiences, type ExperienceItem } from '@/data/experience'
 import SectionHeading from '@/components/ui/SectionHeading'
+import Badge from '@/components/ui/Badge'
 import ScrollReveal from '@/components/ui/ScrollReveal'
 
-function fmt(d: string) {
-  const [y, m] = d.split('-')
-  return new Date(+y, +m - 1).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })
+// ─── Date formatter ───────────────────────────────────────────────────────────
+function formatDate(dateStr: string): string {
+  const [year, month] = dateStr.split('-')
+  const date = new Date(parseInt(year), parseInt(month) - 1)
+  return date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' })
 }
 
-function Detail({ item }: { item: ExperienceItem }) {
+// ─── Experience card (full view) ──────────────────────────────────────────────
+function ExperienceDetail({ item }: { item: ExperienceItem }) {
   return (
     <motion.div
       key={item.id}
-      className="flex flex-col gap-7"
-      initial={{ opacity: 0, x: 16 }}
-      animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: -16 }}
-      transition={{ duration: 0.38, ease: [0.16, 1, 0.3, 1] }}
+      initial={{ opacity: 0, y: 16 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -8 }}
+      transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+      className="flex flex-col gap-6"
     >
       {/* Header */}
       <div className="flex flex-col gap-2">
         <div className="flex flex-wrap items-center gap-3">
-          <h3
-            className="text-2xl md:text-3xl font-bold"
-            style={{ color: 'var(--color-foreground)' }}
-          >
+          <h3 className="font-[var(--font-display)] text-2xl md:text-3xl font-light text-[var(--color-foreground)]">
             {item.role}
           </h3>
-          <span
-            className="px-3 py-1 rounded-full font-mono text-[10px] uppercase tracking-widest"
-            style={{
-              background: 'rgba(56,189,248,0.1)',
-              border: '1px solid rgba(56,189,248,0.22)',
-              color: 'var(--color-accent)',
-            }}
-          >
-            {item.type}
-          </span>
+          <Badge variant="accent">{item.type}</Badge>
         </div>
 
-        <div
-          className="flex flex-wrap items-center gap-2.5 font-mono text-xs"
-          style={{ color: 'var(--color-foreground-muted)' }}
-        >
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
           {item.companyUrl ? (
             <a
               href={item.companyUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="hover:underline underline-offset-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--color-accent)]"
-              style={{ color: 'var(--color-accent)' }}
+              className="font-[var(--font-mono)] text-xs text-[var(--color-accent)] hover:underline underline-offset-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--color-accent)]"
             >
               {item.company}
             </a>
           ) : (
-            <span style={{ color: 'var(--color-accent)' }}>{item.company}</span>
+            <span className="font-[var(--font-mono)] text-xs text-[var(--color-accent)]">
+              {item.company}
+            </span>
           )}
-          <span style={{ color: 'var(--color-foreground-subtle)' }}>·</span>
-          <span>{item.location}</span>
-          <span style={{ color: 'var(--color-foreground-subtle)' }}>·</span>
-          <span style={{ color: 'var(--color-foreground-subtle)' }}>
-            {fmt(item.startDate)} — {item.endDate ? fmt(item.endDate) : 'Present'}
+          <span className="text-[var(--color-border)]" aria-hidden="true">·</span>
+          <span className="font-[var(--font-mono)] text-xs text-[var(--color-foreground-muted)]">
+            {item.location}
+          </span>
+          <span className="text-[var(--color-border)]" aria-hidden="true">·</span>
+          <span className="font-[var(--font-mono)] text-xs text-[var(--color-foreground-subtle)]">
+            {formatDate(item.startDate)} — {item.endDate ? formatDate(item.endDate) : 'Present'}
           </span>
         </div>
       </div>
 
       {/* Description */}
-      <p
-        className="text-sm leading-relaxed max-w-2xl"
-        style={{ color: 'var(--color-foreground-muted)' }}
-      >
+      <p className="text-sm text-[var(--color-foreground-muted)] leading-relaxed max-w-2xl">
         {item.description}
       </p>
 
       {/* Achievements */}
       <div>
-        <p
-          className="font-mono text-[9px] uppercase tracking-[0.22em] mb-3"
-          style={{ color: 'var(--color-foreground-subtle)' }}
-        >
+        <p className="font-[var(--font-mono)] text-[10px] uppercase tracking-[0.2em] text-[var(--color-foreground-subtle)] mb-3">
           Key achievements
         </p>
-        <ul className="flex flex-col gap-3" role="list">
-          {item.achievements.map((a, i) => (
-            <motion.li
-              key={i}
-              className="flex items-start gap-3"
-              initial={{ opacity: 0, x: 12 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: i * 0.07, duration: 0.38 }}
-            >
+        <ul className="flex flex-col gap-2" role="list">
+          {item.achievements.map((ach, i) => (
+            <li key={i} className="flex items-start gap-3">
               <span
-                className="mt-2 w-1.5 h-1.5 rounded-full flex-shrink-0"
-                style={{ background: 'linear-gradient(135deg,#38bdf8,#818cf8)' }}
+                className="mt-1.5 w-1 h-1 flex-shrink-0 rounded-full bg-[var(--color-accent)]"
                 aria-hidden="true"
               />
-              <span
-                className="text-sm leading-relaxed"
-                style={{ color: 'var(--color-foreground-muted)' }}
-              >
-                {a}
+              <span className="text-sm text-[var(--color-foreground-muted)] leading-relaxed">
+                {ach}
               </span>
-            </motion.li>
+            </li>
           ))}
         </ul>
       </div>
 
-      {/* Tech badges */}
-      <div className="flex flex-wrap gap-2">
-        {item.technologies.map((t) => (
-          <span
-            key={t}
-            className="px-2.5 py-1 font-mono text-[10px] uppercase tracking-widest rounded-full"
-            style={{
-              background: 'var(--color-surface-2)',
-              border: '1px solid rgba(56,189,248,0.1)',
-              color: 'var(--color-foreground-muted)',
-            }}
-          >
-            {t}
-          </span>
+      {/* Technologies */}
+      <div className="flex flex-wrap gap-2 pt-2">
+        {item.technologies.map((tech) => (
+          <Badge key={tech} variant="outline">
+            {tech}
+          </Badge>
         ))}
       </div>
     </motion.div>
   )
 }
 
+// ─── Experience ───────────────────────────────────────────────────────────────
 export default function Experience() {
   const [active, setActive] = useState(experiences[0].id)
-  const current = experiences.find((e) => e.id === active) ?? experiences[0]
+  const activeItem = experiences.find((e) => e.id === active) ?? experiences[0]
 
   return (
     <section
       id="experience"
-      className="section-padding relative overflow-hidden"
-      style={{ background: "var(--color-background)" }}
+      className="section-padding bg-[var(--color-background)] border-t border-[var(--color-border)]"
       aria-label="Work experience"
     >
-      <div
-        className="orb absolute pointer-events-none"
-        style={{
-          top: '40%', right: '-5%',
-          width: 400, height: 400,
-          background: 'radial-gradient(circle, rgba(56,189,248,0.08) 0%, transparent 70%)',
-        }}
-        aria-hidden="true"
-      />
-
-      <div className="container-main relative z-10">
+      <div className="container-main">
         <SectionHeading
           index="03"
           label="Experience"
           title="Where I've built things."
-          className="mb-16"
+          className="mb-16 md:mb-20"
         />
 
-        <div className="grid grid-cols-1 lg:grid-cols-[260px_1fr] gap-8 lg:gap-14 items-start">
-          {/* Tab list */}
+        <div className="grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-8 lg:gap-12 items-start">
+
+          {/* Sidebar tab list */}
           <ScrollReveal>
             <div
               role="tablist"
               aria-label="Select experience"
-              className="flex flex-row lg:flex-col overflow-x-auto lg:overflow-visible gap-2"
+              className="flex flex-row lg:flex-col overflow-x-auto lg:overflow-visible gap-0 border border-[var(--color-border)] lg:border-0 lg:border-l lg:border-[var(--color-border)]"
             >
               {experiences.map((exp) => {
                 const isActive = exp.id === active
@@ -176,42 +135,30 @@ export default function Experience() {
                     aria-controls={`panel-${exp.id}`}
                     id={`tab-${exp.id}`}
                     onClick={() => setActive(exp.id)}
-                    className="relative text-left px-4 py-3.5 rounded-xl transition-all duration-250 min-w-max lg:min-w-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--color-accent)]"
-                    style={
-                      isActive
-                        ? {
-                            background: 'rgba(56,189,248,0.08)',
-                            border: '1px solid rgba(56,189,248,0.2)',
-                          }
-                        : {
-                            border: '1px solid transparent',
-                          }
-                    }
+                    className={`
+                      relative text-left px-5 py-4 min-w-max lg:min-w-0 transition-all duration-300
+                      border-b lg:border-b-0 lg:border-l-2 border-[var(--color-border)]
+                      focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--color-accent)]
+                      ${isActive
+                        ? 'lg:border-l-[var(--color-accent)] bg-[var(--color-surface)]'
+                        : 'lg:border-l-transparent hover:bg-[var(--color-surface)] hover:lg:border-l-[var(--color-border)]'}
+                    `}
                   >
-                    {isActive && (
-                      <motion.span
-                        layoutId="exp-indicator"
-                        className="absolute inset-0 rounded-xl"
-                        style={{
-                          background: 'rgba(56,189,248,0.06)',
-                          border: '1px solid rgba(56,189,248,0.18)',
-                        }}
-                        transition={{ type: 'spring', stiffness: 350, damping: 32 }}
-                        aria-hidden="true"
-                      />
-                    )}
-                    <p
-                      className="relative text-xs font-semibold transition-colors"
-                      style={{ color: isActive ? 'var(--color-accent)' : 'var(--color-foreground-muted)' }}
-                    >
+                    <p className={`text-xs font-medium transition-colors duration-200 ${
+                      isActive ? 'text-[var(--color-accent)]' : 'text-[var(--color-foreground-muted)]'
+                    }`}>
                       {exp.company}
                     </p>
-                    <p
-                      className="relative font-mono text-[9px] mt-0.5"
-                      style={{ color: 'var(--color-foreground-subtle)' }}
-                    >
+                    <p className="font-[var(--font-mono)] text-[10px] text-[var(--color-foreground-subtle)] mt-0.5 truncate">
                       {exp.startDate.split('-')[0]} — {exp.endDate ? exp.endDate.split('-')[0] : 'Now'}
                     </p>
+                    {/* Active mobile indicator */}
+                    {isActive && (
+                      <motion.span
+                        className="absolute bottom-0 left-0 right-0 h-0.5 bg-[var(--color-accent)] lg:hidden"
+                        layoutId="tab-indicator"
+                      />
+                    )}
                   </button>
                 )
               })}
@@ -220,13 +167,13 @@ export default function Experience() {
 
           {/* Detail panel */}
           <div
-            id={`panel-${current.id}`}
+            id={`panel-${activeItem.id}`}
             role="tabpanel"
-            aria-labelledby={`tab-${current.id}`}
+            aria-labelledby={`tab-${activeItem.id}`}
             className="min-h-[320px]"
           >
             <AnimatePresence mode="wait">
-              <Detail key={current.id} item={current} />
+              <ExperienceDetail key={activeItem.id} item={activeItem} />
             </AnimatePresence>
           </div>
         </div>

@@ -158,7 +158,7 @@ export default function Experience() {
           className="mb-16"
         />
 
-        <div className="grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-8 lg:gap-12 xl:gap-16 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-[260px_1fr] gap-8 lg:gap-14 items-start">
           {/* Tab list */}
           <ScrollReveal>
             <div

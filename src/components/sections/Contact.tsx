@@ -58,7 +58,7 @@ export default function Contact() {
       <div className="container-main relative z-10">
         <SectionHeading index="08" label="Contact" title="Let's build something."
           subtitle="Have a project, an opportunity, or just want to say hello? My inbox is open." className="mb-16" />
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-10 lg:gap-12 xl:gap-16 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-12 xl:gap-20 items-start">
           {/* Form */}
           <ScrollReveal>
             <AnimatePresence mode="wait">

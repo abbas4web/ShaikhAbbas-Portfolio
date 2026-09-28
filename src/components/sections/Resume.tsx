@@ -90,7 +90,7 @@ export default function Resume() {
       <div className="container-main relative z-10">
         <SectionHeading index="07" label="Resume" title="The full picture." className="mb-16" />
 
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-10 lg:gap-12 xl:gap-16 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-12 xl:gap-20 items-start">
           {/* Left */}
           <div className="flex flex-col gap-8">
             <ScrollReveal>

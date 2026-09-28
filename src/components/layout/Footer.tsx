@@ -52,8 +52,8 @@ export default function Footer() {
       aria-label="Site footer"
       style={{ background: 'var(--color-background)', borderTop: '1px solid rgba(56,189,248,0.1)' }}
     >
-      <div className="container-main py-12 lg:py-16">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-[1fr_180px_220px] gap-10 lg:gap-12">
+      <div className="container-main py-16">
+        <div className="grid grid-cols-1 md:grid-cols-[1fr_160px_200px] gap-12">
 
           {/* Brand */}
           <div className="flex flex-col gap-5 max-w-xs">
@@ -81,9 +81,9 @@ export default function Footer() {
                     target={link.url.startsWith('mailto') ? undefined : '_blank'}
                     rel={link.url.startsWith('mailto') ? undefined : 'noopener noreferrer'}
                     aria-label={link.label}
-                    className="w-9 h-9 rounded-xl flex items-center justify-center transition-all duration-200 hover:text-[#38bdf8] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--color-accent)]"
+                    className="w-9 h-9 rounded-xl flex items-center justify-center transition-all duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--color-accent)]"
                     style={{ background: 'var(--color-surface)', border: '1px solid rgba(56,189,248,0.12)', color: 'var(--color-foreground-subtle)' }}
-                    whileHover={{ scale: 1.1 }}
+                    whileHover={{ scale: 1.1, color: '#38bdf8' } as Record<string, unknown>}
                     transition={{ duration: 0.18 }}
                   >
                     {Icon ? <Icon /> : null}
@@ -156,9 +156,9 @@ export default function Footer() {
             <motion.button
               onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
               aria-label="Back to top"
-              className="w-9 h-9 rounded-xl flex items-center justify-center transition-all duration-200 hover:text-[#38bdf8] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--color-accent)]"
+              className="w-9 h-9 rounded-xl flex items-center justify-center transition-all duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--color-accent)]"
               style={{ background: 'var(--color-surface)', border: '1px solid rgba(56,189,248,0.12)', color: 'var(--color-foreground-subtle)' }}
-              whileHover={{ y: -2, scale: 1.05 }}
+              whileHover={{ y: -2, scale: 1.05, color: '#38bdf8' } as Record<string, unknown>}
               transition={{ duration: 0.18 }}
             >
               <ArrowUp size={14} strokeWidth={2} />

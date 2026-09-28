@@ -170,7 +170,7 @@ export default function AILab() {
           label="AI Lab"
           title="Experiments & curiosity."
           subtitle="What I build when no one's watching — exploratory AI projects and proof-of-concepts."
-          className="mb-16"
+          className="mb-12"
         />
 
         {/* Intro strip */}
@@ -206,7 +206,7 @@ export default function AILab() {
         </ScrollReveal>
 
         {/* 4-col grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
           {experiments
             .sort((a, b) => a.displayOrder - b.displayOrder)
             .map((e, i) => (

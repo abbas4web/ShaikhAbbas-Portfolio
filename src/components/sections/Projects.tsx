@@ -166,7 +166,7 @@ export default function Projects() {
             </div>
           </ScrollReveal>
         </div>
-        <motion.div layout className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5">
+        <motion.div layout className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
           <AnimatePresence mode="popLayout">
             {visible.map((p, i) => <ProjectCard key={p.id} project={p} index={i} />)}
           </AnimatePresence>

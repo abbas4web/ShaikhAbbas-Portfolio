@@ -260,18 +260,11 @@ export default function Hero() {
       />
 
       {/* ── Main content ── */}
-      {/*
-        Hero vertical spacing system:
-        - Top: navbar height (≈72px) + generous breathing room via pt
-        - pt-28 = 112px on mobile, pt-36 = 144px on lg (enough to clear fixed navbar)
-        - pb-24 = 96px on mobile, pb-32 = 128px on lg
-        - Internal element gaps follow the spacing scale: 24/28/32/48px
-      */}
-      <div className="container-main relative z-10 pt-28 pb-24 lg:pt-36 lg:pb-32">
+      <div className="container-main relative z-10" style={{ paddingTop: '9rem', paddingBottom: '6rem' }}>
 
         {/* Available badge */}
         <motion.div
-          className="inline-flex items-center gap-2.5 rounded-full px-4 py-2 mb-8"
+          className="inline-flex items-center gap-2.5 rounded-full px-4 py-2 mb-12"
           style={{
             background: 'rgba(56,189,248,0.07)',
             border: '1px solid rgba(56,189,248,0.25)',
@@ -296,10 +289,10 @@ export default function Hero() {
         </motion.div>
 
         {/* Name */}
-        <div className="mb-7 overflow-hidden">
+        <div className="mb-8 overflow-hidden">
           <div
             className="font-bold tracking-tight leading-[0.88]"
-            style={{ fontSize: 'clamp(3.2rem, 9vw, 8rem)' }}
+            style={{ fontSize: 'clamp(3.8rem, 10.5vw, 9rem)' }}
           >
             <AnimatedName
               text={profile.firstName}
@@ -316,7 +309,7 @@ export default function Hero() {
 
         {/* Role + line */}
         <motion.div
-          className="flex items-center gap-4 mb-6"
+          className="flex items-center gap-4 mb-8"
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.65, delay: BASE, ease: [0.16, 1, 0.3, 1] }}
@@ -331,8 +324,8 @@ export default function Hero() {
 
         {/* Tagline */}
         <motion.p
-          className="mb-10 max-w-xl leading-relaxed"
-          style={{ fontSize: '1.125rem', color: 'var(--color-foreground-muted)' }}
+          className="mb-12 max-w-xl leading-relaxed"
+          style={{ fontSize: '1.15rem', color: 'var(--color-foreground-muted)' }}
           initial={{ opacity: 0, y: 18 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.75, delay: BASE + 0.1, ease: [0.16, 1, 0.3, 1] }}
@@ -342,7 +335,7 @@ export default function Hero() {
 
         {/* CTA buttons */}
         <motion.div
-          className="flex flex-wrap gap-4 mb-14"
+          className="flex flex-wrap gap-4 mb-20"
           initial={{ opacity: 0, y: 18 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.75, delay: BASE + 0.22, ease: [0.16, 1, 0.3, 1] }}
